@@ -1,5 +1,8 @@
-# Byte-compiled / optimized / DLL files
 __pycache__/
 */__pycache__/
-
+local_settings.
+db.sqlite3
+db.sqlite3-journal
+media
+*.csv
 my_settings.py
