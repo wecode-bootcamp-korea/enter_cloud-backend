@@ -6,7 +6,6 @@ class User(models.Model):
     password     = models.CharField(max_length = 100)
     phone_number = models.CharField(max_length= 11, null = True)
     avatar_image = models.URLField(max_length = 2000, null = True)
-    login_method = models.CharField(max_length = 10, null = True)
 
     class Meta:
         db_table = "users"
@@ -17,3 +16,4 @@ class Host(models.Model):
     
     class Meta:
         db_table = "hosts"
+
