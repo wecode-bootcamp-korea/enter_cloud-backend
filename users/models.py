@@ -13,7 +13,7 @@ class User(models.Model):
 
 class Host(models.Model):
     user                = models.OneToOneField("User", on_delete = models.CASCADE)
-    host_avatar_image   = models.URLField(max_length = 2000)
+    host_avatar_image   = models.URLField(max_length = 2000, null = True)
     
     class Meta:
         db_table = "hosts"
