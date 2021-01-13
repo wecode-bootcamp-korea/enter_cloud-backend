@@ -1,27 +1,27 @@
 from django.db import models
 
+from utils import TimeStampModel
+
 class Type(models.Model):
     name = models.CharField(max_length = 15)
     
     class Meta:
         db_table = "types"
 
-class Space(models.Model):
+class Space(TimeStampModel):
     name                 = models.CharField(max_length = 18)
     simple_information   = models.CharField(max_length = 27)
     main_information     = models.CharField(max_length = 500)
-    main_image           = models.URLField()
-    site_url             = models.URLField(null = True)
-    email                = models.EmailField()
+    main_image           = models.URLField(max_length = 2000)
+    site_url             = models.URLField(max_length = 2000, null = True)
+    email                = models.EmailField(max_length = 245)
     phone_number         = models.CharField(max_length = 11)
     main_phone_number    = models.CharField(max_length = 20)
     open_time            = models.IntegerField()
     close_time           = models.IntegerField()
-    lat                  = models.DecimalField(max_digits = 10, decimal_places = 6, null = True)
-    lng                  = models.DecimalField(max_digits = 10, decimal_places = 6, null = True)
+    latitude             = models.DecimalField(max_digits = 10, decimal_places = 6, null = True)
+    longitude            = models.DecimalField(max_digits = 10, decimal_places = 6, null = True)
     location             = models.CharField(max_length = 20, null = True)
-    created_at           = models.DateTimeField(auto_now_add = True)
-    updated_at           = models.DateTimeField(auto_now = True)
     host                 = models.ForeignKey("users.Host", on_delete = models.CASCADE)
     types                = models.ManyToManyField("Type", db_table = "space_types")
 
@@ -55,7 +55,7 @@ class Facility(models.Model):
         db_table = "facilities"
 
 class SubImage(models.Model):
-    image_url = models.URLField()
+    image_url = models.URLField(max_length = 2000)
     space     = models.ForeignKey("Space", on_delete = models.CASCADE)
 
     class Meta:
@@ -84,7 +84,7 @@ class BreakDay(models.Model):
 class DetailSpace(models.Model):
     name                 = models.CharField(max_length = 18)
     information          = models.CharField(max_length = 500)
-    image                = models.URLField()
+    image                = models.URLField(max_length = 2000)
     min_reservation_time = models.IntegerField()
     min_people           = models.IntegerField()
     max_people           = models.IntegerField()
