@@ -24,10 +24,10 @@ class Command(BaseCommand):
             Review, 
             number,
             {
-                "user":lambda x : random.choice(users),
-                "space": lambda x : random.choice(spaces),
-                "rating": lambda x : random.randint(3, 5),
-                "content": lambda x : random.choice(review_list)
+                "user":      lambda x : random.choice(users),
+                "space":     lambda x : random.choice(spaces),
+                "rating":    lambda x : random.randint(3, 5),
+                "content":   lambda x : random.choice(review_list)
             }
         )
         seeder.execute()

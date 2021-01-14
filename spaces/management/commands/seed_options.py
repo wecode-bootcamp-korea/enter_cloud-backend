@@ -1,9 +1,9 @@
-from faker import Faker
-from django_seed import Seed
+from faker          import Faker
+from django_seed    import Seed
 
 from django.core.management.base import BaseCommand
 
-from spaces.models  import *
+from spaces.models  import Tag, Type, BreakDay, DetailFacility, DetailType
 from my_settings    import tag_list, type_list, week_list, facilities_informations, detail_facility_list
 
 class Command(BaseCommand):
@@ -28,5 +28,6 @@ class Command(BaseCommand):
 
         for detail_type in type_list:
             DetailType.objects.create(name = detail_type)
+
         self.stdout.write(self.style.SUCCESS(f'Option list created'))
         

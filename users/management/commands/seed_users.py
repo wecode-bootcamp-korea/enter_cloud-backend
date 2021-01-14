@@ -3,9 +3,9 @@ import bcrypt
 from django.core.management.base import BaseCommand
 from django.contrib.admin.utils  import flatten
 
-from users.models import User, Host
-from django_seed import Seed
-from faker import Faker
+from users.models   import User, Host
+from django_seed    import Seed
+from faker          import Faker
 
 
 class Command(BaseCommand):
@@ -24,8 +24,8 @@ class Command(BaseCommand):
             User,
             number,
             {   
-                "nickname":      lambda x: fake.name(),
-                "email":         lambda x: seeder.faker.email(),
+                "nickname":      lambda x : fake.name(),
+                "email":         lambda x : seeder.faker.email(),
                 "password":      bcrypt.hashpw("wecode123".encode(), bcrypt.gensalt()).decode(),
                 "phone_number":  None,
                 "avatar_image":  None
@@ -34,6 +34,7 @@ class Command(BaseCommand):
         seed_user      = seeder.execute()
         user_id        = flatten(seed_user.values())[0]
         user           = User.objects.get(id = user_id)
+        
         Host.objects.create(user = user, host_avatar_image = None)
         self.stdout.write(self.style.SUCCESS(f'created user number : {number}' ))
         
