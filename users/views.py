@@ -47,12 +47,12 @@ class SignupView(View):
 
         except KeyError:
             return JsonResponse(
-                {"message" : "KeyError"}, status = 401
+                {"message" : "KEYERROR"}, status = 401
             )
 
         except json.decoder.JSONDecodeError:
             return JsonResponse(
-                {"message" : "Invalid_data"}, status = 401
+                {"message" : "INVALID_DATA"}, status = 401
             )
 
 
@@ -69,17 +69,17 @@ class SigninView(View):
                         {"TOKEN" : token}, status = 201
                     )
                 return JsonResponse(
-                    {"message" : "Invalid_password"}, status =401
+                    {"message" : "INVALID_PASSWORD"}, status =401
                 )
             return JsonResponse(
-                {"message" : "Invalid_user"}, status = 401
+                {"message" : "INVALID_USER"}, status = 401
             )
 
         except KeyError:
             return JsonResponse(
-                {"message" : "KeyError"}, status = 401
+                {"message" : "KEYERROR"}, status = 401
             )
         except json.decoder.JSONDecodeError:
             return JsonResponse(
-                {"message" : "Invalid_data"}, status = 401
+                {"message" : "INVALID_DATA"}, status = 401
             )
