@@ -17,8 +17,8 @@ class Space(TimeStampModel):
     email                = models.EmailField(max_length = 245)
     phone_number         = models.CharField(max_length = 11)
     main_phone_number    = models.CharField(max_length = 20)
-    open_time            = models.TimeField(default = 0)
-    close_time           = models.TimeField(default = 24)
+    open_time            = models.CharField(max_length = 10)
+    close_time           = models.CharField(max_length = 10)
     latitude             = models.DecimalField(max_digits = 10, decimal_places = 6, null = True)
     longitude            = models.DecimalField(max_digits = 10, decimal_places = 6, null = True)
     location             = models.CharField(max_length = 20, null = True)
@@ -88,6 +88,7 @@ class DetailSpace(models.Model):
     min_reservation_time = models.IntegerField()
     min_people           = models.IntegerField()
     max_people           = models.IntegerField()
+    price                = models.IntegerField()
     space                = models.ForeignKey("Space", on_delete = models.CASCADE)
 
     class Meta:
