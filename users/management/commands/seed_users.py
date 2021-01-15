@@ -34,7 +34,6 @@ class Command(BaseCommand):
         seed_user      = seeder.execute()
         user_id        = flatten(seed_user.values())[0]
         user           = User.objects.get(id = user_id)
-        
+
         Host.objects.create(user = user, host_avatar_image = None)
         self.stdout.write(self.style.SUCCESS(f'created user number : {number}' ))
-        
