@@ -4,7 +4,6 @@ import random
 from django.views       import View
 from django.http        import JsonResponse, HttpResponse
 from django.db.models   import Max
-from django.db          import connection
 
 from spaces.models      import Space
 from users.models       import Host  
@@ -15,7 +14,6 @@ class SpaceCardView(View):
     def get(self, request):
         spaces = Space.objects.all().order_by("?").select_related("host").prefetch_related("review_set", "spacetag_set", "subimage_set", 
                                                                                             "detailspace_set", "host__user", "spacetag_set__tag")
-        print(request.GET.get("q"))
         data = [
             {
                 "name"          : space.name,
