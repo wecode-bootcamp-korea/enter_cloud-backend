@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import SpaceView, SpaceListView, SpaceDetailView
+from .views import SpaceView, SpaceDetailView
 
 urlpatterns = [
     path("/main", SpaceView.as_view()),

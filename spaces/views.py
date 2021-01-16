@@ -8,6 +8,7 @@ from django.db.models   import Max
 from spaces.models      import Space
 from users.models       import Host  
 from reviews.models     import Review
+from reviews.views      import ReviewView
 
 
 class SpaceCardView(View):
@@ -48,11 +49,11 @@ class SpaceView(SpaceCardView):
         ]
         return JsonResponse({"space_card":self.space_card, "review_card":review_card}, status = 200)
 
-class SpaceDetailView(View):
+class SpaceDetailView(ReviewView):
     def get(self, request, space_id):
+        super().get(request, space_id)
         try:
             space = Space.objects.get(id = space_id)
-            
             main_space = [
                 {
                     "name"                      : space.name,
@@ -85,6 +86,6 @@ class SpaceDetailView(View):
                 for detail_space in space.detailspace_set.all().prefetch_related("detailfacility_set", "detailtype_set")
             ]
 
-            return JsonResponse({"main":main_space, "detail":detail_space}, status = 200)
+            return JsonResponse({"main":main_space, "detail":detail_space, "review_data":self.review_list}, status = 200)
         except Space.DoesNotExist:
             return HttpResponse("SPACE_DOES_NOT_EXIST", status = 400)
