@@ -15,6 +15,7 @@ class SpaceCardView(View):
                                                                                             "detailspace_set", "host__user", "spacetag_set__tag")
         data = [
             {
+                "id"            : space.id,
                 "name"          : space.name,
                 "host"          : space.host.user.nickname,
                 "location"      : space.location,
@@ -69,6 +70,7 @@ class LikeView(View):
             space    = Space.objects.get(id = space_id)
             user     = request.user
             like     = Like.objects.filter(user = user, space = space)
+
             if not like.exists():
                 like.create(user = user, space = space)
                 return HttpResponse("LIKE")
@@ -84,6 +86,7 @@ class LikeView(View):
             space    = Space.objects.get(id = space_id)
             user     = request.user
             like     = Like.objects.filter(user = user, space = space)
+
             if like.exists():
                 like.delete()
                 return HttpResponse("UNLIKE")
