@@ -1,12 +1,13 @@
 import json
 
 from django.views       import View
-from django.http        import JsonResponse
+from django.http        import JsonResponse, HttpResponse
 from django.db.models   import Max
 
-from spaces.models      import Space
+from spaces.models      import Space, Like
 from users.models       import Host  
 from reviews.models     import Review
+from decorators.utils   import login_required
 
 class SpaceCardView(View):
     def get(self, request):
@@ -60,3 +61,35 @@ class SpaceView(SpaceCardView):
             for review in reviews
         ]
         return JsonResponse({"space_card":self.space_card, "review_card":review_card}, status = 200)
+
+class LikeView(View):
+    @login_required
+    def post(self, request, space_id):
+        try:
+            space    = Space.objects.get(id = space_id)
+            user     = request.user
+            like     = Like.objects.filter(user = user, space = space)
+            if not like.exists():
+                like.create(user = user, space = space)
+                return HttpResponse("LIKE")
+            return HttpResponse("HTTP_METHOD_WRONG")
+        except Space.DoesNotExist:
+            return HttpResponse("SPACE_DOES_NOT_EXIST")
+        except KeyError:
+            return HttpResponse("KEY_ERROR")
+    
+    @login_required
+    def delete(self, request, space_id):
+        try:
+            space    = Space.objects.get(id = space_id)
+            user     = request.user
+            like     = Like.objects.filter(user = user, space = space)
+            if like.exists():
+                like.delete()
+                return HttpResponse("UNLIKE")
+            return HttpResponse("HTTP_METHOD_WRONG")
+        except Space.DoesNotExist:
+            return HttpResponse("SPACE_DOES_NOT_EXIST")
+        except KeyError:
+            return HttpResponse("KEY_ERROR")
+

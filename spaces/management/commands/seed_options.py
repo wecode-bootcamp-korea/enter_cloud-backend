@@ -29,4 +29,4 @@ class Command(BaseCommand):
         for detail_type in type_list:
             DetailType.objects.create(name = detail_type)
 
-	        self.stdout.write(self.style.SUCCESS(f'Option list created'))
+        self.stdout.write(self.style.SUCCESS(f'Option list created'))

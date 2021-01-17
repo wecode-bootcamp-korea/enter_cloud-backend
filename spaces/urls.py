@@ -1,7 +1,8 @@
 from django.urls import path
 
-from .views import SpaceView
+from .views import SpaceView, LikeView
 
 urlpatterns = [
-    path("/main", SpaceView.as_view())
+    path("/main", SpaceView.as_view()),
+    path("/<int:space_id>/like", LikeView.as_view())
 ]
