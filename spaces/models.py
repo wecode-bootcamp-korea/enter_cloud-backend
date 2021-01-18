@@ -109,8 +109,9 @@ class DetailFacility(models.Model):
         db_table = "detail_facilities"
 
 class Like(models.Model):
-    user = models.ForeignKey("users.User", on_delete = models.CASCADE)
-    space = models.ForeignKey("spaces.Space", on_delete = models.CASCADE)
+    user     = models.ForeignKey("users.User", on_delete = models.CASCADE)
+    space    = models.ForeignKey("spaces.Space", on_delete = models.CASCADE)
+    is_liked = models.BooleanField(default = False)
 
     class Meta:
         db_table = "likes"

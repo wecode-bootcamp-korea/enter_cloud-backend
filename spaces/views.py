@@ -2,20 +2,17 @@ import json
 import random
 
 from django.views       import View
-from django.http        import JsonResponse, HttpResponse
+from django.http        import JsonResponse
 from django.db.models   import Max
 
 from spaces.models      import Space, Like
 from users.models       import Host  
 from reviews.models     import Review
-<<<<<<< HEAD
-from decorators.utils   import login_required
-=======
 from reviews.views      import ReviewView
+from decorators.utils   import login_required
 
 PRICE = 5000
 MAX_PEOPLE = 10
->>>>>>> 26e4b9f020ad39072dd558a1ba75469b824e73bb
 
 class SpaceCardView(View):
     def get(self, request):
@@ -56,41 +53,30 @@ class SpaceView(SpaceCardView):
         ]
         return JsonResponse({"space_card":self.space_card, "review_card":review_card}, status = 200)
 
-<<<<<<< HEAD
 class LikeView(View):
     @login_required
-    def post(self, request, space_id):
+    def patch(self, request, space_id):
         try:
             space    = Space.objects.get(id = space_id)
             user     = request.user
-            like     = Like.objects.filter(user = user, space = space)
+            like     = Like.objects.get(user = user, space = space)
 
-            if not like.exists():
-                like.create(user = user, space = space)
-                return HttpResponse("LIKE")
-            return HttpResponse("HTTP_METHOD_WRONG")
+            if like.is_liked == True:
+                like.is_liked = False
+                like.save()
+                return JsonResponse({"message":"UNLIKE"}, status = 200)
+
+            like.is_liked = True
+            like.save()
+            return JsonResponse({"message":"LIKE"}, status = 200)
+        except Like.DoesNotExist:
+            Like.objects.create(user = user, space = space, is_liked = True)
+            return JsonResponse({"message":"LIKE"}, status = 200)    
         except Space.DoesNotExist:
-            return HttpResponse("SPACE_DOES_NOT_EXIST")
-        except KeyError:
-            return HttpResponse("KEY_ERROR")
-    
-    @login_required
-    def delete(self, request, space_id):
-        try:
-            space    = Space.objects.get(id = space_id)
-            user     = request.user
-            like     = Like.objects.filter(user = user, space = space)
+            return JsonResponse({"message":"SPACE_DOES_NOT_EXIST"}, status = 400)
 
-            if like.exists():
-                like.delete()
-                return HttpResponse("UNLIKE")
-            return HttpResponse("HTTP_METHOD_WRONG")
-        except Space.DoesNotExist:
-            return HttpResponse("SPACE_DOES_NOT_EXIST")
-        except KeyError:
-            return HttpResponse("KEY_ERROR")
+            
 
-=======
 class SpaceDetailView(View):
     def get(self, request, space_id):
         try:
@@ -129,5 +115,4 @@ class SpaceDetailView(View):
 
             return JsonResponse({"main":main_space, "detail":detail_space}, status = 200)
         except Space.DoesNotExist:
-            return HttpResponse("SPACE_DOES_NOT_EXIST", status = 400)
->>>>>>> 26e4b9f020ad39072dd558a1ba75469b824e73bb
+            return JsonResponse({"message":"SPACE_DOES_NOT_EXIST"}, status = 400)

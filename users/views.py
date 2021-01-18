@@ -8,13 +8,9 @@ from django.views     import View
 from django.db.models import Q
 
 from .models          import User
-<<<<<<< HEAD
+from my_settings      import SECRET_KEY, ALGORITHM, validate_nickname, validate_email
 from spaces.views     import SpaceCardView
-from my_settings      import DATABASE, SECRET_KEY, ALGORITHM, validate_nickname, validate_email, validate_password
 from decorators.utils import login_required
-=======
-from my_settings      import DATABASE, SECRET_KEY, ALGORITHM, validate_nickname, validate_email
->>>>>>> 26e4b9f020ad39072dd558a1ba75469b824e73bb
 
 class SignupView(View):
     def post(self, request):
