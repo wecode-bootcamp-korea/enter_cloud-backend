@@ -10,11 +10,11 @@ from users.models       import Host
 from reviews.models     import Review
 from reviews.views      import ReviewView
 
+PRICE = 5000
+MAX_PEOPLE = 10
 
 class SpaceCardView(View):
     def get(self, request):
-        PRICE       = 5000
-        MAX_PEOPLE  = 10
         spaces      = Space.objects.all().order_by("?").select_related("host").prefetch_related("review_set", "spacetag_set", "subimage_set", 
                                                                                             "detailspace_set", "host__user", "spacetag_set__tag")
         data = [
@@ -37,7 +37,6 @@ class SpaceCardView(View):
 class SpaceView(SpaceCardView):
     def get(self, request):
         super().get(request)
-        PRICE   = 5000
         reviews = Review.objects.all().order_by("-created_at").select_related("space").prefetch_related("space__detailspace_set", 
                                                                                                         "space__spacetag_set__tag")
         review_card = [
