@@ -13,7 +13,9 @@ from reviews.views      import ReviewView
 
 class SpaceCardView(View):
     def get(self, request):
-        spaces = Space.objects.all().order_by("?").select_related("host").prefetch_related("review_set", "spacetag_set", "subimage_set", 
+        PRICE       = 5000
+        MAX_PEOPLE  = 10
+        spaces      = Space.objects.all().order_by("?").select_related("host").prefetch_related("review_set", "spacetag_set", "subimage_set", 
                                                                                             "detailspace_set", "host__user", "spacetag_set__tag")
         data = [
             {
@@ -22,8 +24,8 @@ class SpaceCardView(View):
                 "location"      : space.location,
                 "count_review"  : space.review_set.count(),
                 "main_image"    : space.main_image.strip('\,\n\"'),
-                "max_people"    : space.detailspace_set.aggregate(Max("max_people"))["max_people__max"] if space.detailspace_set.exists() else 10,
-                "price"         : space.detailspace_set.aggregate(Max("price"))["price__max"] if space.detailspace_set.exists() else 5000,
+                "max_people"    : space.detailspace_set.aggregate(Max("max_people"))["max_people__max"] if space.detailspace_set.exists() else MAX_PEOPLE,
+                "price"         : space.detailspace_set.aggregate(Max("price"))["price__max"] if space.detailspace_set.exists() else PRICE,
                 "tags"          : [tag.tag.name for tag in space.spacetag_set.all()],
                 "sub_image"     : [sub_image.image_url.strip('\,\n\"') for sub_image in space.subimage_set.all()],
             }
@@ -35,6 +37,7 @@ class SpaceCardView(View):
 class SpaceView(SpaceCardView):
     def get(self, request):
         super().get(request)
+        PRICE   = 5000
         reviews = Review.objects.all().order_by("-created_at").select_related("space").prefetch_related("space__detailspace_set", 
                                                                                                         "space__spacetag_set__tag")
         review_card = [
@@ -42,16 +45,15 @@ class SpaceView(SpaceCardView):
                 "name"      : review.space.name,
                 "content"   : review.content,
                 "rating"    : review.rating,
-                "price"     : review.space.detailspace_set.all().aggregate(Max("price")) if review.space.detailspace_set.exists() else 5000,
+                "price"     : review.space.detailspace_set.all().aggregate(Max("price")) if review.space.detailspace_set.exists() else PRICE,
                 "tags"      : [tag.tag.name for tag in review.space.spacetag_set.all()]
             }
             for review in reviews
         ]
         return JsonResponse({"space_card":self.space_card, "review_card":review_card}, status = 200)
 
-class SpaceDetailView(ReviewView):
+class SpaceDetailView(View):
     def get(self, request, space_id):
-        super().get(request, space_id)
         try:
             space = Space.objects.get(id = space_id)
             main_space = [
@@ -86,6 +88,6 @@ class SpaceDetailView(ReviewView):
                 for detail_space in space.detailspace_set.all().prefetch_related("detailfacility_set", "detailtype_set")
             ]
 
-            return JsonResponse({"main":main_space, "detail":detail_space, "review_data":self.review_list}, status = 200)
+            return JsonResponse({"main":main_space, "detail":detail_space}, status = 200)
         except Space.DoesNotExist:
             return HttpResponse("SPACE_DOES_NOT_EXIST", status = 400)
