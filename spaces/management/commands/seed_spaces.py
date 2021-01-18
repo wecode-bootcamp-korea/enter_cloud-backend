@@ -18,14 +18,15 @@ from spaces.models  import (Space,
                             SpaceFacility,
                             SpaceTag,
                             SpaceBreakday,
+                            ReservationNote,
                             DetailSpace,
                             DetailType,
                             DetailFacility)
 from my_settings    import (name_list,
                             simple_info_list, 
                             main_info_list, 
-                            detail_name_list, 
-                            detail_facility_list)
+                            reservation_notes
+                            )
 
 class Command(BaseCommand):
     help = "create spaces"
@@ -69,6 +70,7 @@ class Command(BaseCommand):
         space_id        = flatten(seed_space.values())[0]
         space           = Space.objects.get(id = space_id)
         random_number   = random.randint(1, len(reader))
+        
         sub_image_list  = reader[random_number:random_number + 3]
         for sub_image_url in sub_image_list:
             SubImage.objects.create(space = space, image_url = sub_image_url)
@@ -84,14 +86,19 @@ class Command(BaseCommand):
             SpaceTag.objects.create(space = space, tag = tag)
 
         random_number   = random.randint(1, len(facilities))
-        facility_lsit   = facilities[random_number : random_number + 6]
-        for facility in facility_lsit:
+        facility_list   = facilities[random_number : random_number + 6]
+        for facility in facility_list:
             SpaceFacility.objects.create(space = space, facility = facility)
 
         random_number   = random.randint(1, len(breakdays))
         breakday_list   = breakdays[random_number: random_number + 1]
         for breakday in breakday_list:
             SpaceBreakday.objects.create(space = space, breakday = breakday)
+
+        random_number            = random.randint(1, len(breakdays))
+        reservation_note_list    = reservation_notes[random_number: random_number + 1]
+        for description in reservation_note_list:
+            ReservationNote.objects.create(space = space, description = description)
             
         space.save()
         self.stdout.write(self.style.SUCCESS(f'spaces created {number}'))
