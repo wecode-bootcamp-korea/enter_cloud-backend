@@ -108,5 +108,14 @@ class DetailFacility(models.Model):
     class Meta:
         db_table = "detail_facilities"
 
+class Package(TimeStampModel):
+    name = models.CharField(max_length = 18)
+    start_time = models.DateTimeField(null = True)
+    end_time = models.DateTimeField(null = True)
+    price = models.IntegerField()
+    excess_people = models.IntegerField()
+    detail_space = models.ForeignKey("spaces.DetailSpace", on_delete = models.CASCADE)
 
+    class Meta:
+        db_table = "packages"
     

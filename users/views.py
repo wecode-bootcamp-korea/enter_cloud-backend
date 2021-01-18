@@ -8,14 +8,15 @@ from django.views     import View
 from django.db.models import Q
 
 from .models          import User
-from my_settings      import DATABASE, SECRET_KEY, ALGORITHM, validate_nickname, validate_email, validate_password
+from my_settings      import DATABASE, SECRET_KEY, ALGORITHM, validate_nickname, validate_email
 
 class SignupView(View):
     def post(self, request):
-        
         try:
-            data       = json.loads(request.body)
-            encrypt_pw = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+            PASSWORD_LENGTH  = 8
+            data             = json.loads(request.body)
+            password         = data["password"]
+            encrypt_pw       = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
             if not validate_nickname.match(data['nickname']):
                 return JsonResponse(
@@ -27,7 +28,7 @@ class SignupView(View):
                     {"message" : "INVALID_EMAIL"}, status = 400
                 )
             
-            if not validate_password.match(data['password']):
+            if len(password) < PASSWORD_LENGTH:
                 return JsonResponse(
                     {"message" : "INVALID_PASSWORD"}, status = 400
                 )
@@ -59,7 +60,7 @@ class SignupView(View):
 class SigninView(View):
     def post(self, request):
         try:
-            data = json.loads(request.body)
+            data            = json.loads(request.body)
 
             if User.objects.filter(email = data['email']).exists():
                 user = User.objects.get(email = data['email'])
