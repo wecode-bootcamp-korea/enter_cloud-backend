@@ -59,23 +59,20 @@ class LikeView(View):
         try:
             space    = Space.objects.get(id = space_id)
             user     = request.user
-            like     = Like.objects.get(user = user, space = space)
-
-            if like.is_liked == True:
-                like.is_liked = False
+            
+            if Like.objects.filter(user = user, space = space).exists():
+                like = Like.objects.get(user = user, space = space)
+                if like.is_liked == True:
+                    like.is_liked = False
+                    like.save()
+                    return JsonResponse({"message":"UNLIKE"}, status = 200)
+                like.is_liked = True
                 like.save()
-                return JsonResponse({"message":"UNLIKE"}, status = 200)
-
-            like.is_liked = True
-            like.save()
-            return JsonResponse({"message":"LIKE"}, status = 200)
-        except Like.DoesNotExist:
+                return JsonResponse({"message":"LIKE"}, status = 200)
             Like.objects.create(user = user, space = space, is_liked = True)
-            return JsonResponse({"message":"LIKE"}, status = 200)    
+            return JsonResponse({"message":"LIKE"}, status = 201)
         except Space.DoesNotExist:
             return JsonResponse({"message":"SPACE_DOES_NOT_EXIST"}, status = 400)
-
-            
 
 class SpaceDetailView(View):
     def get(self, request, space_id):
