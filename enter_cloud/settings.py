@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'users',
     "spaces",
     "reviews",
-    "qna"
+    "qna",
+    "reservations"
 ]
 
 MIDDLEWARE = [
