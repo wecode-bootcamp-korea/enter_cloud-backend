@@ -13,7 +13,11 @@ def login_required(func):
             user_id         = jwt.decode(token, key = SECRET, algorithms = ALGORITHM).get("id")
             user            = User.objects.get(id = user_id)
             request.user    = user
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> 26e4b9f020ad39072dd558a1ba75469b824e73bb
         except User.DoesNotExist:
             return JsonResponse({"message":"USER_DOES_NOT_EXIST"}, status = 400)
         except jwt.InvalidSignatureError:
@@ -21,4 +25,8 @@ def login_required(func):
         except jwt.DecodeError:
             return JsonResponse({"message":"DECODE_ERROR"}, status = 400)
         return func(self, request, *args, **kwargs)
+<<<<<<< HEAD
     return wrapper
+=======
+    return wrapper
+>>>>>>> 26e4b9f020ad39072dd558a1ba75469b824e73bb
