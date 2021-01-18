@@ -16,6 +16,8 @@ class ReviewView(View):
         
             if not reviews.exists():
                 reviews = reviews[0:PAGE_SIZE]
+            else:
+                reviews = reviews[offset:limit]
                 
             review_data = [
                     {
