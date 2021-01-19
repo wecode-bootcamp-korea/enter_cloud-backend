@@ -4,25 +4,26 @@ from django.utils import timezone
 from utils import TimeStampModel
 
 class Reservation(models.Model):
-    status = models.CharField(max_length = 20, default = "pending")
-    people = models.IntegerField()
-    user = models.ForeignKey("users.User", on_delete = models.CASCADE)
     reservation_type = models.CharField(max_length = 20)
-    package = models.ForeignKey("spaces.Package", on_delete = models.CASCADE)
-    time = models.ForeignKey("Time", on_delete = models.CASCADE)
+    people = models.IntegerField()
+    day = models.DateField()
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    status = models.CharField(max_length = 20, default = "pending")
+    user = models.ForeignKey("users.User", on_delete = models.CASCADE)
+    package = models.ForeignKey("spaces.PackagePrice", on_delete = models.CASCADE, null = True)
+    time = models.ForeignKey("spaces.TimePrice", on_delete = models.CASCADE, null = True)
 
     class Meta:
         db_table = "reservations"
 
-class Time(TimeStampModel):
-    day = models.DateField(default = timezone.now)
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
-    detail_space = models.ForeignKey("spaces.DetailSpace", on_delete = models.CASCADE)
+class ReservationInformation(models.Model):
+    reservation = models.OneToOneField("Reservation", on_delete = models.CASCADE)
+    name = models.CharField(max_length = 45)
+    phone_number = models.CharField(max_length = 11)
+    email = models.EmailField(max_length = 245)
+    purpose = models.CharField(max_length = 30)
+    reservation_request = models.CharField(max_length = 500)
 
     class Meta:
-        db_table = "times"
-
-class TimeType(models.Model):
-    type_price = models.CharField(max_length = 45)
-    
+        db_table = "reservation_informations"

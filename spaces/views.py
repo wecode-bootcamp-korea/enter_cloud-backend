@@ -4,6 +4,7 @@ import random
 from django.views       import View
 from django.http        import JsonResponse, HttpResponse
 from django.db.models   import Max
+from django.db          import connection
 
 from spaces.models      import Space
 from users.models       import Host  
@@ -31,6 +32,7 @@ class SpaceCardView(View):
             }
             for space in spaces
             ]
+        print(len(connection.queries))
         self.space_card = data
         return JsonResponse({"data":data}, status = 200)
 
@@ -38,7 +40,8 @@ class SpaceView(SpaceCardView):
     def get(self, request):
         super().get(request)
         reviews = Review.objects.all().order_by("-created_at").select_related("space").prefetch_related("space__detailspace_set", 
-                                                                                                        "space__spacetag_set__tag")
+                                                                                                        "space__spacetag_set__tag",
+                                                                                                        )
         review_card = [
             {
                 "name"      : review.space.name,

@@ -102,20 +102,30 @@ class DetailType(models.Model):
         db_table = "detail_types"
 
 class DetailFacility(models.Model):
-    name         = models.CharField(max_length = 45)
-    detail_space = models.ManyToManyField("DetailSpace", db_table = "detail_space_facilities")
+    name             = models.CharField(max_length = 45)
+    facility_type    = models.CharField(max_length = 45)
+    detail_space     = models.ManyToManyField("DetailSpace", db_table = "detail_space_facilities")
 
     class Meta:
         db_table = "detail_facilities"
 
-class Package(TimeStampModel):
+class PackagePrice(TimeStampModel):
     name = models.CharField(max_length = 18)
     start_time = models.DateTimeField(null = True)
     end_time = models.DateTimeField(null = True)
-    price = models.IntegerField()
-    excess_people = models.IntegerField()
+    price = models.IntegerField(null = True)
+    people = models.IntegerField(null = True)
+    excess_price = models.IntegerField(null = True)
     detail_space = models.ForeignKey("spaces.DetailSpace", on_delete = models.CASCADE)
 
     class Meta:
-        db_table = "packages"
+        db_table = "package_prices"
     
+class TimePrice(TimeStampModel):
+    time_reservation_type = models.CharField(max_length = 20)
+    excess_price = models.IntegerField(null = True)
+    price = models.IntegerField()
+    detail_space = models.ForeignKey("DetailSpace", on_delete = models.CASCADE)
+
+    class Meta:
+        db_table = "time_prices"
