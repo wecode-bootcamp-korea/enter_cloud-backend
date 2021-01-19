@@ -24,7 +24,7 @@ class Command(BaseCommand):
             Facility.objects.create(description = description)
 
         for detail_facility in detail_facility_list:
-            DetailFacility.objects.create(name = detail_facility)
+            DetailFacility.objects.create(name = detail_facility[0], facility_type = detail_facility[1])
 
         for detail_type in type_list:
             DetailType.objects.create(name = detail_type)

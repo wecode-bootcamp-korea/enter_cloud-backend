@@ -20,6 +20,7 @@ class SpaceCardView(View):
                                                                                             "detailspace_set", "host__user", "spacetag_set__tag")
         data = [
             {
+                "id"            : space.id,
                 "name"          : space.name,
                 "host"          : space.host.user.nickname,
                 "location"      : space.location,
@@ -30,20 +31,22 @@ class SpaceCardView(View):
                 "tags"          : [tag.tag.name for tag in space.spacetag_set.all()],
                 "sub_image"     : [sub_image.image_url.strip('\,\n\"') for sub_image in space.subimage_set.all()],
             }
-            for space in spaces
+            for space in spaces[0]
             ]
-        print(len(connection.queries))
+    
         self.space_card = data
         return JsonResponse({"data":data}, status = 200)
 
 class SpaceView(SpaceCardView):
     def get(self, request):
         super().get(request)
+        page = request.GET.get("page")
         reviews = Review.objects.all().order_by("-created_at").select_related("space").prefetch_related("space__detailspace_set", 
                                                                                                         "space__spacetag_set__tag",
                                                                                                         )
         review_card = [
             {
+                "id"        : review.id,
                 "name"      : review.space.name,
                 "content"   : review.content,
                 "rating"    : review.rating,
@@ -60,6 +63,7 @@ class SpaceDetailView(View):
             space = Space.objects.get(id = space_id)
             main_space = [
                 {
+                    "id"                        : space.id,
                     "name"                      : space.name,
                     "simple_information"        : space.simple_information,
                     "main_image"                : space.main_image.strip('\,\n\"'),
@@ -77,15 +81,22 @@ class SpaceDetailView(View):
 
             detail_space = [
                 {
+                    "id"                    : detail_space.id,
                     "name"                  : detail_space.name,
                     "price"                 : detail_space.price,
                     "image"                 : detail_space.image.strip('\,\n\"'),
                     "information"           : detail_space.information,
-                    "types"                 : [detail_space_type.name for detail_space_type in detail_space.detailtype_set.all()],
+                    "type"                  : [detail_space_type.name for detail_space_type in detail_space.detailtype_set.all()],
                     "min_reservation_time"  : detail_space.min_reservation_time,
                     "min_people"            : detail_space.min_people,
-                    "max_poeple"            : detail_space.max_people,
-                    "facilities"            : [facility.name for facility in detail_space.detailfacility_set.all()],
+                    "max_people"            : detail_space.max_people,
+                    "facilities"            : [
+                        {
+                            "name": facility.name,
+                            "type": facility.facility_type
+                        }
+                        for facility in detail_space.detailfacility_set.all()
+                        ],
                 }
                 for detail_space in space.detailspace_set.all().prefetch_related("detailfacility_set", "detailtype_set")
             ]

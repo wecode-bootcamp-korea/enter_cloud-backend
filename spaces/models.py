@@ -111,11 +111,11 @@ class DetailFacility(models.Model):
 
 class PackagePrice(TimeStampModel):
     name = models.CharField(max_length = 18)
-    start_time = models.DateTimeField(null = True)
-    end_time = models.DateTimeField(null = True)
-    price = models.IntegerField(null = True)
-    people = models.IntegerField(null = True)
-    excess_price = models.IntegerField(null = True)
+    start_time = models.IntegerField()
+    end_time = models.IntegerField()
+    price = models.IntegerField()
+    people = models.IntegerField()
+    excess_price = models.IntegerField()
     detail_space = models.ForeignKey("spaces.DetailSpace", on_delete = models.CASCADE)
 
     class Meta:

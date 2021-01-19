@@ -21,9 +21,9 @@ class ReservationInformation(models.Model):
     reservation = models.OneToOneField("Reservation", on_delete = models.CASCADE)
     name = models.CharField(max_length = 45)
     phone_number = models.CharField(max_length = 11)
-    email = models.EmailField(max_length = 245)
-    purpose = models.CharField(max_length = 30)
-    reservation_request = models.CharField(max_length = 500)
+    email = models.EmailField(max_length = 245, null = True)
+    purpose = models.CharField(max_length = 30, null = True)
+    reservation_request = models.CharField(max_length = 500, null = True)
 
     class Meta:
         db_table = "reservation_informations"

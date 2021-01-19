@@ -5,14 +5,13 @@ from spaces.models import Space
 from reviews.models import Review
 
 class ReviewView(View):
-    def get(self, request, space_id):
+    def get(self, request):
         try:
             PAGE_SIZE       = 3
             page            = request.GET.get("page", 1)
             limit           = PAGE_SIZE * int(page)
             offset          = limit - PAGE_SIZE            
-            space           = Space.objects.get(id = space_id)
-            reviews         = space.review_set.all().select_related("user")
+            reviews         = Review.objects.all()
         
             if not reviews.exists():
                 reviews = reviews[0:PAGE_SIZE]
