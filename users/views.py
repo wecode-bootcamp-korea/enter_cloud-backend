@@ -8,7 +8,9 @@ from django.views     import View
 from django.db.models import Q
 
 from .models          import User
-from my_settings      import DATABASE, SECRET_KEY, ALGORITHM, validate_nickname, validate_email
+from my_settings      import SECRET_KEY, ALGORITHM, validate_nickname, validate_email
+from spaces.views     import SpaceCardView
+from decorators.utils import login_required
 
 class SignupView(View):
     def post(self, request):
@@ -56,7 +58,6 @@ class SignupView(View):
                 {"message" : "INVALID_DATA"}, status = 401
             )
 
-
 class SigninView(View):
     def post(self, request):
         try:
@@ -84,3 +85,17 @@ class SigninView(View):
             return JsonResponse(
                 {"message" : "INVALID_DATA"}, status = 401
             )
+
+class UserLikeView(SpaceCardView):
+    @login_required
+    def get(self, request):
+        super().get(request)
+        user            = request.user
+        like_card_id    = [like.space.id for like in user.like_set.all()]
+        like_space_card = []
+
+        for card in self.space_card:
+            space_id = card.get("id")
+            if space_id in like_card_id:
+                like_space_card.append(card)
+        return JsonResponse({"like_card":like_space_card}, status = 200)
