@@ -33,5 +33,13 @@ class ReviewView(View):
         except ValueError:
             return HttpResponse("QUERY_STRING_IS_NOT_INTEGER")
             
-            
-        
+class ReviewCardView(View):
+    def get(self, request):
+        reviews = Review.objects.all()
+        review_card = [
+            {
+                ""
+            }
+            for review in reviews
+        ]
+        return JsonResponse({"review_card":"AF"}, status = 200)
