@@ -32,8 +32,11 @@ class Command(BaseCommand):
 
     help = "create detail spaces"
 
+    def add_arguments(self, parser):
+        parser.add_argument("--number", type=int, default=1) 
+
     def handle(self, *args, **options):
-        number              = 2
+        number              = options.get("number")
         spaces              = Space.objects.all()
         file                = open("all.csv", mode="r")
         reader              = file.readlines()
@@ -55,16 +58,18 @@ class Command(BaseCommand):
                 "price":                  10000,
             }
         )
-        seed_detail_space   = seeder.execute()
-        detail_space_id     = flatten(seed_detail_space.values())[1]
-        detail_space        = DetailSpace.objects.get(id = detail_space_id)
+        seed_detail_space       = seeder.execute()
+        detail_space_id_list    = flatten(seed_detail_space.values())
         
-        random_number       = random.randint(1, len(detail_types))
-        detail_type_list    = detail_types[random_number:random_number + 2]
-        detail_space.detailtype_set.set(detail_type_list)
+        for detail_space_id in detail_space_id_list:
+            detail_space        = DetailSpace.objects.get(id = detail_space_id)
+        
+            random_number       = random.randint(1, len(detail_types))
+            detail_type_list    = detail_types[random_number:random_number + 2]
+            detail_space.detailtype_set.set(detail_type_list)
 
-        random_number           = random.randint(1, len(detail_facilities))
-        detail_facility_list    = detail_facilities[random_number:random_number + 6]
-        detail_space.detailfacility_set.set(detail_facility_list)
+            random_number           = random.randint(1, len(detail_facilities))
+            detail_facility_list    = detail_facilities[random_number:random_number + 6]
+            detail_space.detailfacility_set.set(detail_facility_list)
         
         self.stdout.write(self.style.SUCCESS(f'spaces created {number}'))

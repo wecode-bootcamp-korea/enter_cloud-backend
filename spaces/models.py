@@ -103,6 +103,7 @@ class DetailType(models.Model):
 
 class DetailFacility(models.Model):
     name         = models.CharField(max_length = 45)
+    english_name = models.CharField(max_length = 45)
     detail_space = models.ManyToManyField("DetailSpace", db_table = "detail_space_facilities")
 
     class Meta:

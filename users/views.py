@@ -58,7 +58,6 @@ class SignupView(View):
                 {"message" : "INVALID_DATA"}, status = 401
             )
 
-
 class SigninView(View):
     def post(self, request):
         try:

@@ -1,8 +1,10 @@
-from django.http import JsonResponse
+from django.http        import JsonResponse
+from django.db.models   import Max
+from django.db import connection
 
-from django.views import View
-from spaces.models import Space
-from reviews.models import Review
+from django.views       import View
+from spaces.models      import Space
+from reviews.models     import Review
 
 class ReviewView(View):
     def get(self, request, space_id):
@@ -33,5 +35,20 @@ class ReviewView(View):
         except ValueError:
             return JsonResponse({"message":"QUERY_STRING_IS_NOT_INTEGER"}, status = 400)
             
-            
-        
+class ReviewCardView(View):
+    def get(self, request):
+        PRICE   = 5000
+        reviews = Review.objects.all().order_by("-created_at").select_related("space").prefetch_related("space__detailspace_set", 
+                                                                                                        "space__spacetag_set__tag")
+        review_card = [
+            {
+                "name"      : review.space.name,
+                "content"   : review.content,
+                "rating"    : review.rating,
+                "image_url" : review.space.main_image,
+                "price"     : review.space.detailspace_set.all().aggregate(Max("price")) if review.space.detailspace_set.exists() else PRICE,
+                "tags"      : [tag.tag.name for tag in review.space.spacetag_set.all()]
+            }
+            for review in reviews
+        ]
+        return JsonResponse({"review_card":review_card}, status = 200)
