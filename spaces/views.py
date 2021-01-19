@@ -2,13 +2,14 @@ import json
 import random
 
 from django.views       import View
-from django.http        import JsonResponse, HttpResponse
+from django.http        import JsonResponse
 from django.db.models   import Max
 
-from spaces.models      import Space
+from spaces.models      import Space, Like
 from users.models       import Host  
 from reviews.models     import Review
 from reviews.views      import ReviewView
+from decorators.utils   import login_required
 
 PRICE = 5000
 MAX_PEOPLE = 10
@@ -19,6 +20,7 @@ class SpaceCardView(View):
                                                                                             "detailspace_set", "host__user", "spacetag_set__tag")
         data = [
             {
+                "id"            : space.id,
                 "name"          : space.name,
                 "host"          : space.host.user.nickname,
                 "location"      : space.location,
@@ -50,6 +52,27 @@ class SpaceView(SpaceCardView):
             for review in reviews
         ]
         return JsonResponse({"space_card":self.space_card, "review_card":review_card}, status = 200)
+
+class LikeView(View):
+    @login_required
+    def patch(self, request, space_id):
+        try:
+            space    = Space.objects.get(id = space_id)
+            user     = request.user
+            
+            if Like.objects.filter(user = user, space = space).exists():
+                like = Like.objects.get(user = user, space = space)
+                if like.is_liked == True:
+                    like.is_liked = False
+                    like.save()
+                    return JsonResponse({"message":"UNLIKE"}, status = 200)
+                like.is_liked = True
+                like.save()
+                return JsonResponse({"message":"LIKE"}, status = 200)
+            Like.objects.create(user = user, space = space, is_liked = True)
+            return JsonResponse({"message":"LIKE"}, status = 201)
+        except Space.DoesNotExist:
+            return JsonResponse({"message":"SPACE_DOES_NOT_EXIST"}, status = 400)
 
 class SpaceDetailView(View):
     def get(self, request, space_id):
@@ -89,4 +112,4 @@ class SpaceDetailView(View):
 
             return JsonResponse({"main":main_space, "detail":detail_space}, status = 200)
         except Space.DoesNotExist:
-            return HttpResponse("SPACE_DOES_NOT_EXIST", status = 400)
+            return JsonResponse({"message":"SPACE_DOES_NOT_EXIST"}, status = 400)

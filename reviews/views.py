@@ -1,4 +1,4 @@
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 
 from django.views import View
 from spaces.models import Space
@@ -31,7 +31,7 @@ class ReviewView(View):
                 ]
             return JsonResponse({"review_data":review_data}, status = 200)
         except ValueError:
-            return HttpResponse("QUERY_STRING_IS_NOT_INTEGER")
+            return JsonResponse({"message":"QUERY_STRING_IS_NOT_INTEGER"}, status = 400)
             
             
         
