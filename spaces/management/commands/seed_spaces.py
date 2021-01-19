@@ -102,4 +102,4 @@ class Command(BaseCommand):
                 ReservationNote.objects.create(space = space, description = description)
                 
             space.save()
-            self.stdout.write(self.style.SUCCESS(f'spaces created {number}'))
+        self.stdout.write(self.style.SUCCESS(f'spaces created {number}'))

@@ -19,6 +19,7 @@ class SpaceCardView(View):
                                                                                             "detailspace_set", "host__user", "spacetag_set__tag")
         data = [
             {
+                "id"            : space.id,
                 "name"          : space.name,
                 "host"          : space.host.user.nickname,
                 "location"      : space.location,
@@ -31,7 +32,6 @@ class SpaceCardView(View):
             }
             for space in spaces
             ]
-        self.space_card = data
         return JsonResponse({"data":data}, status = 200)
 
 class SpaceDetailView(View):
@@ -40,6 +40,7 @@ class SpaceDetailView(View):
             space = Space.objects.get(id = space_id)
             main_space = [
                 {
+                    "id"                        : space.id,
                     "name"                      : space.name,
                     "simple_information"        : space.simple_information,
                     "main_image"                : space.main_image.strip('\,\n\"'),
@@ -57,6 +58,7 @@ class SpaceDetailView(View):
 
             detail_space = [
                 {
+                    "id"                    : detail_space.id,
                     "name"                  : detail_space.name,
                     "price"                 : detail_space.price,
                     "image"                 : detail_space.image.strip('\,\n\"'),

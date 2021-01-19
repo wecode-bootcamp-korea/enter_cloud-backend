@@ -32,8 +32,11 @@ class Command(BaseCommand):
 
     help = "create detail spaces"
 
+    def add_arguments(self, parser):
+        parser.add_argument("--number", type=int, default=1) 
+
     def handle(self, *args, **options):
-        number              = 2
+        number              = options.get("number")
         spaces              = Space.objects.all()
         file                = open("all.csv", mode="r")
         reader              = file.readlines()

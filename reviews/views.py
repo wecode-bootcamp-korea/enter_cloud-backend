@@ -38,8 +38,12 @@ class ReviewCardView(View):
         reviews = Review.objects.all()
         review_card = [
             {
-                ""
+                "id"        : review.id,
+                "image_url" : review.space.main_image,
+                "rating"    : review.rating,
+                "content"   : review.content,
+                "price"     : [tag.tag.name for tag in review.space.spacetag_set.all()]
             }
             for review in reviews
         ]
-        return JsonResponse({"review_card":"AF"}, status = 200)
+        return JsonResponse({"review_card":review_card}, status = 200)
