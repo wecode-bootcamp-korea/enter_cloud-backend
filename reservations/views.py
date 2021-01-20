@@ -60,8 +60,8 @@ class ReservationView(View):
         if start > end:
             return JsonResponse({"message":"WRONG_TIME"}, status = 400) 
         
-        day_check = Reservation.objects.filter(day = reservation_day)
-        hours = list(range(0, 24))
+        day_check   = Reservation.objects.filter(day = reservation_day)
+        hours       = list(range(0, 24))
 
         for check in day_check:
             for hour in range(check.start_time.hour, check.end_time.hour):
@@ -72,13 +72,13 @@ class ReservationView(View):
                 return JsonResponse({"message":"CAN_NOT_RESERVATION"})
 
         reservation = Reservation.objects.create(
-            user = user, 
-            reservation_type = reservation_type, 
-            people = reservation_people, 
-            day = reservation_day, 
-            start_time = start, 
-            end_time = end, 
-            detail_space = detail_space
+            user                 = user, 
+            reservation_type     = reservation_type, 
+            people               = reservation_people, 
+            day                  = reservation_day, 
+            start_time           = start, 
+            end_time             = end, 
+            detail_space         = detail_space
             )
 
         if reservation_type == "패키지":
@@ -88,25 +88,25 @@ class ReservationView(View):
         reservation.save()
 
         ReservationInformation.objects.create(
-            reservation = reservation, 
-            name = name, 
-            phone_number = phone_number, 
-            email = email, 
-            purpose = purpose, 
-            reservation_request = reservation_request,
-            price = except_excess_price + add_price
+            reservation          = reservation, 
+            name                 = name, 
+            phone_number         = phone_number, 
+            email                = email, 
+            purpose              = purpose, 
+            reservation_request  = reservation_request,
+            price                = except_excess_price + add_price
             )
         return JsonResponse({"message":"SUCCESS"}, status = 201)
 
     def get(self, request, detail_space_id):
-        data = json.loads(request.body)
-        detail_space = DetailSpace.objects.get(id = detail_space_id)
+        data             = json.loads(request.body)
+        detail_space     = DetailSpace.objects.get(id = detail_space_id)
         reservation_list = detail_space.reservation_set.all()
         reservation_data = [
             {
-                "day":reservation.day,
-                "start_time":reservation.start_time,
-                "end_time":reservation.end_time
+                "day"           :reservation.day,
+                "start_time"    :reservation.start_time,
+                "end_time"      :reservation.end_time
             }
             for reservation in reservation_list
         ]
