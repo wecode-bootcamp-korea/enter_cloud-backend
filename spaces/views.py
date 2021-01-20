@@ -19,16 +19,18 @@ class SpaceCardView(View):
     def get(self, request):
         try:
             PAGE_SIZE    = 9
-            space_type   = request.GET.get("type", "카페")
+            space_type   = request.GET.get("type")
             location     = request.GET.get("location")
             page         = int(request.GET.get("page", 1))
             limit        = page * PAGE_SIZE
             offset       = limit - PAGE_SIZE
-            search_type  = Type.objects.get(name = space_type)
+            search_type  = Type.objects.filter(name = space_type)
             spaces       = Space.objects.all().order_by("?").\
                             select_related("host").\
-                            prefetch_related("host__user", "spacetag_set", "subimage_set", "detailspace_set", "spacetag_set__tag").\
-                            filter(types__in = [search_type])    
+                            prefetch_related("host__user", "spacetag_set", "subimage_set", "detailspace_set", "spacetag_set__tag")
+                            
+            if search_type.exists():
+                spaces = spaces.filter(types__name__in = [space_type])
 
             if location is not None:
                 spaces = spaces.filter(location__icontains = location)
