@@ -55,7 +55,7 @@ class Command(BaseCommand):
                 "min_reservation_time":   lambda x : random.randint(2, 5),
                 "min_people":             lambda x : random.randint(1, 2),
                 "max_people":             lambda x : random.randint(4, 10),
-                "price":                  10000,
+                "price":                  lambda x : random.randint(5, 40) * 1000
             }
         )
         seed_detail_space       = seeder.execute()
