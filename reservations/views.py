@@ -35,7 +35,7 @@ class ReservationView(View):
             except_excess_price = package.price
 
             if not package in detail_space.packageprice_set.all():
-                return JsonResponse({"message":"PACKAGE_NOT_IN_DETAIL_SPACE"})
+                return JsonResponse({"message":"PACKAGE_NOT_IN_DETAIL_SPACE"}, status = 400)
         
         if reservation_type == "시간":
             time_price_id       = data["time_id"]
@@ -47,7 +47,7 @@ class ReservationView(View):
             except_excess_price = time_price.price
            
             if not time_price in detail_space.timeprice_set.all():
-                return JsonResponse({"message":"TIME_PRICE_NOT_IN_DETAIL_SPACE"})
+                return JsonResponse({"message":"TIME_PRICE_NOT_IN_DETAIL_SPACE"}, status = 400)
         
         year, month, day    = reservation_day.split("-")
         start               = datetime(int(year), int(month), int(day), start_time)
@@ -69,7 +69,7 @@ class ReservationView(View):
 
         for reservation_time in range(start_time, end_time+1):
             if not  reservation_time in hours:
-                return JsonResponse({"message":"CAN_NOT_RESERVATION"})
+                return JsonResponse({"message":"CAN_NOT_RESERVATION"}, status = 400)
 
         reservation = Reservation.objects.create(
             user                 = user, 
