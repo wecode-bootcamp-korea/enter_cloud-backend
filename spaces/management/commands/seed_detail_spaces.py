@@ -33,7 +33,7 @@ class Command(BaseCommand):
     help = "create detail spaces"
 
     def add_arguments(self, parser):
-        parser.add_argument("--number", type=int, default=1)
+        parser.add_argument("--number", type=int, default=1) 
 
     def handle(self, *args, **options):
         number              = options.get("number")
@@ -55,13 +55,14 @@ class Command(BaseCommand):
                 "min_reservation_time":   lambda x : random.randint(2, 5),
                 "min_people":             lambda x : random.randint(1, 2),
                 "max_people":             lambda x : random.randint(4, 10),
-                "price":                  10000,
+                "price":                  lambda x : random.randint(5, 40) * 1000
             }
         )
         seed_detail_space       = seeder.execute()
         detail_space_id_list    = flatten(seed_detail_space.values())
+        
         for detail_space_id in detail_space_id_list:
-            detail_space = DetailSpace.objects.get(id = detail_space_id)
+            detail_space        = DetailSpace.objects.get(id = detail_space_id)
         
             random_number       = random.randint(1, len(detail_types))
             detail_type_list    = detail_types[random_number:random_number + 2]
@@ -70,5 +71,5 @@ class Command(BaseCommand):
             random_number           = random.randint(1, len(detail_facilities))
             detail_facility_list    = detail_facilities[random_number:random_number + 6]
             detail_space.detailfacility_set.set(detail_facility_list)
-
+        
         self.stdout.write(self.style.SUCCESS(f'spaces created {number}'))

@@ -102,9 +102,9 @@ class DetailType(models.Model):
         db_table = "detail_types"
 
 class DetailFacility(models.Model):
-    name             = models.CharField(max_length = 45)
-    facility_type    = models.CharField(max_length = 45)
-    detail_space     = models.ManyToManyField("DetailSpace", db_table = "detail_space_facilities")
+    name         = models.CharField(max_length = 45)
+    english_name = models.CharField(max_length = 45)
+    detail_space = models.ManyToManyField("DetailSpace", db_table = "detail_space_facilities")
 
     class Meta:
         db_table = "detail_facilities"
@@ -129,3 +129,11 @@ class TimePrice(TimeStampModel):
 
     class Meta:
         db_table = "time_prices"
+class Like(models.Model):
+    user     = models.ForeignKey("users.User", on_delete = models.CASCADE)
+    space    = models.ForeignKey("spaces.Space", on_delete = models.CASCADE)
+    is_liked = models.BooleanField(default = False)
+
+    class Meta:
+        db_table = "likes"
+    

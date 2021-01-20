@@ -54,7 +54,7 @@ class Command(BaseCommand):
             {
                 "host":                 lambda x : random.choice(hosts),
                 "name":                 lambda x : random.choice(name_list),
-                "main_image":           lambda x : reader[random.randint(0, image_length-1)],
+                "main_image":           lambda x : reader[random.randint(0, image_length-1)].strip('"\,\n"'),
                 "main_information":     lambda x : random.choice(main_info_list),
                 "simple_information":   lambda x : random.choice(simple_info_list),
                 "phone_number":         lambda x : fake.phone_number(),
@@ -68,35 +68,35 @@ class Command(BaseCommand):
         )
         seed_space      = seeder.execute()
         space_id_list   = flatten(seed_space.values())
+
         for space_id in space_id_list:
             space           = Space.objects.get(id = space_id)
-            random_number   = random.randint(1, len(reader))
-            
+            random_number   = random.randint(0, len(reader))
             sub_image_list  = reader[random_number:random_number + 3]
             for sub_image_url in sub_image_list:
-                SubImage.objects.create(space = space, image_url = sub_image_url)
+                SubImage.objects.create(space = space, image_url = sub_image_url.strip('"\,\n"'))
             
-            random_number   = random.randint(1, len(types))
+            random_number   = random.randint(0, len(types))
             type_list       = types[random_number:random_number + 3]
             for space_type in type_list:
                 space.types.add(space_type)
 
-            random_number   = random.randint(1, len(tags))
+            random_number   = random.randint(0, len(tags))
             tag_list        = tags[random_number:random_number + 4]
             for tag in tag_list:
                 SpaceTag.objects.create(space = space, tag = tag)
 
-            random_number   = random.randint(1, len(facilities))
+            random_number   = random.randint(0, len(facilities))
             facility_list   = facilities[random_number : random_number + 6]
             for facility in facility_list:
                 SpaceFacility.objects.create(space = space, facility = facility)
 
-            random_number   = random.randint(1, len(breakdays))
+            random_number   = random.randint(0, len(breakdays))
             breakday_list   = breakdays[random_number: random_number + 1]
             for breakday in breakday_list:
                 SpaceBreakday.objects.create(space = space, breakday = breakday)
 
-            random_number            = random.randint(1, len(breakdays))
+            random_number            = random.randint(0, len(breakdays))
             reservation_note_list    = reservation_notes[random_number: random_number + 1]
             for description in reservation_note_list:
                 ReservationNote.objects.create(space = space, description = description)
