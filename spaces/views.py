@@ -1,11 +1,12 @@
 import json
 import random
+import math
 
 from django.views       import View
 from django.http        import JsonResponse
 from django.db.models   import Max
 
-from spaces.models      import Space, Like
+from spaces.models      import Space, Like, Type
 from users.models       import Host  
 from reviews.models     import Review
 from reviews.views      import ReviewView
@@ -16,8 +17,8 @@ MAX_PEOPLE = 10
 
 class SpaceCardView(View):
     def get(self, request):
-        spaces      = Space.objects.all().order_by("?").select_related("host").prefetch_related("review_set", "spacetag_set", "subimage_set", 
-                                                                                            "detailspace_set", "host__user", "spacetag_set__tag")
+        spaces      = Space.objects.all().order_by("?").select_related("host").prefetch_related("host__user", "spacetag_set", "subimage_set", 
+                                                                                            "detailspace_set", "spacetag_set__tag")
         space_card = [
             {
                 "id"            : space.id,
@@ -31,7 +32,7 @@ class SpaceCardView(View):
                 "tags"          : [tag.tag.name for tag in space.spacetag_set.all()],
                 "sub_image"     : [sub_image.image_url.strip('\,\n\"') for sub_image in space.subimage_set.all()],
             }
-            for space in spaces
+            for space in spaces[0:9]
             ]
         return JsonResponse({"space_card":space_card}, status = 200)
 
@@ -82,6 +83,61 @@ class SpaceDetailView(View):
             return JsonResponse({"main":main_space, "detail":detail_space}, status = 200)
         except Space.DoesNotExist:
             return JsonResponse({"message":"SPACE_DOES_NOT_EXIST"}, status = 400)
+
+class SpaceListView(View):
+    def get(self, request):
+        try:
+            search_list     = list(request.GET.get("q").split())
+            search_type     = search_list[0]
+
+            if len(search_list) == 2:
+                search_location = search_list[1]
+            else:
+                search_location = None
+
+            if Type.objects.filter(name = search_type).exists():
+                space_type = Type.objects.get(name = search_type)
+            else:
+                space_type = Type.objects.get(name = "카페")
+            
+            spaces = space_type.space_set.all().select_related("host")\
+                .prefetch_related("detailspace_set", "subimage_set", "spacetag_set__tag", "host__user", "review_set")
+
+            if search_location:
+                spaces = spaces.filter(location__icontains = search_location)        
+
+            PAGE_SIZE       = 9
+            page            = int(request.GET.get("page", 1))
+            max_page        = math.ceil(len(spaces) / PAGE_SIZE)
+
+            if page > max_page or page < 1:
+                page = 1
+        
+            limit           = int(page) * PAGE_SIZE
+            offset          = limit - PAGE_SIZE
+            space_cards = [
+                {
+                    "id"            : space.id,
+                    "name"          : space.name,
+                    "host"          : space.host.user.nickname,
+                    "location"      : space.location,
+                    "count_review"  : space.review_set.count(),
+                    "main_image"    : space.main_image.strip('\,\n\"'),
+                    "max_people"    : space.detailspace_set.aggregate(Max("max_people"))["max_people__max"]
+                                    if space.detailspace_set.exists()
+                                    else MAX_PEOPLE,
+                    "price"         : space.detailspace_set.annotate(space_price = Max("price"))[0].price 
+                                    if space.detailspace_set.exists() 
+                                    else PRICE,
+                    "tags"          : [tag.tag.name for tag in space.spacetag_set.all()],
+                    "sub_image"     : [sub_image.image_url.strip('\,\n\"') for sub_image in space.subimage_set.all()],
+                }
+                for space in spaces[offset:limit]
+                ]
+
+            return JsonResponse({"space_cards":space_cards}, status = 200)
+        except AttributeError:
+            return JsonResponse({"message":"SEARCH_WORD_REQUIRED"}, status = 400)
 
 class LikeView(View):
     @login_required
