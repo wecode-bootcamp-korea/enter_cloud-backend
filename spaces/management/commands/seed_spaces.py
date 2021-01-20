@@ -54,7 +54,7 @@ class Command(BaseCommand):
             {
                 "host":                 lambda x : random.choice(hosts),
                 "name":                 lambda x : random.choice(name_list),
-                "main_image":           lambda x : reader[random.randint(0, image_length-1)],
+                "main_image":           lambda x : reader[random.randint(0, image_length-1)].strip('"\,\n"'),
                 "main_information":     lambda x : random.choice(main_info_list),
                 "simple_information":   lambda x : random.choice(simple_info_list),
                 "phone_number":         lambda x : fake.phone_number(),
@@ -74,7 +74,7 @@ class Command(BaseCommand):
             random_number   = random.randint(0, len(reader))
             sub_image_list  = reader[random_number:random_number + 3]
             for sub_image_url in sub_image_list:
-                SubImage.objects.create(space = space, image_url = sub_image_url)
+                SubImage.objects.create(space = space, image_url = sub_image_url.strip('"\,\n"'))
             
             random_number   = random.randint(0, len(types))
             type_list       = types[random_number:random_number + 3]
