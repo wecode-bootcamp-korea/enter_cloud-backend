@@ -29,8 +29,8 @@ class Command(BaseCommand):
                 "space":        lambda x : random.choice(spaces),
                 "rating":       lambda x : random.randint(3, 5),
                 "content":      lambda x : random.choice(review_list),
-                "created_at":   lambda x : timezone.localtime(),
-                "updated_at":   lambda x : timezone.localtime()
+                "created_at":   lambda x : timezone.now(),
+                "updated_at":   lambda x : timezone.now()
             }
         )
         seeder.execute()

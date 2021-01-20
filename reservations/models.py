@@ -13,6 +13,7 @@ class Reservation(models.Model):
     user = models.ForeignKey("users.User", on_delete = models.CASCADE)
     package = models.ForeignKey("spaces.PackagePrice", on_delete = models.CASCADE, null = True)
     time = models.ForeignKey("spaces.TimePrice", on_delete = models.CASCADE, null = True)
+    detail_space = models.ForeignKey("spaces.DetailSpace", on_delete = models.CASCADE)
 
     class Meta:
         db_table = "reservations"
@@ -23,6 +24,7 @@ class ReservationInformation(models.Model):
     phone_number = models.CharField(max_length = 11)
     email = models.EmailField(max_length = 245, null = True)
     purpose = models.CharField(max_length = 30, null = True)
+    price = models.IntegerField()
     reservation_request = models.CharField(max_length = 500, null = True)
 
     class Meta:

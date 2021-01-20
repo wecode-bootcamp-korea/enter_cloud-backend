@@ -176,8 +176,8 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('name', models.CharField(max_length=18)),
-                ('start_time', models.DateTimeField()),
-                ('end_time', models.DateTimeField()),
+                ('start_time', models.IntegerField()),
+                ('end_time', models.IntegerField()),
                 ('price', models.IntegerField()),
                 ('people', models.IntegerField()),
                 ('excess_price', models.IntegerField()),
@@ -185,6 +185,9 @@ class Migration(migrations.Migration):
             ],
             options={
                 'db_table': 'package_prices',
+            },
+        ),
+        migrations.CreateModel(
             name='Like',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
@@ -217,11 +220,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=45)),
-<<<<<<< HEAD
-                ('facility_type', models.CharField(max_length=45)),
-=======
                 ('english_name', models.CharField(max_length=45)),
->>>>>>> 95a045f0a187ab0bb397a18ca65361ac03633838
                 ('detail_space', models.ManyToManyField(db_table='detail_space_facilities', to='spaces.DetailSpace')),
             ],
             options={

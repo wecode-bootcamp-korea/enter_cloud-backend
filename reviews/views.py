@@ -1,6 +1,7 @@
 from django.http        import JsonResponse
 from django.db.models   import Max
 
+
 from django.views       import View
 from spaces.models      import Space
 from reviews.models     import Review
@@ -50,7 +51,7 @@ class ReviewCardView(View):
                 "rating"    : review.rating,
                 "image_url" : review.space.main_image,
                 "price"     : review.space.detailspace_set.all().aggregate(Max("price")) if review.space.detailspace_set.exists() else PRICE,
-                "types"     : [types.name for types in review.space.types.all()]
+                "tags"      : [tag.tag.name for tag in review.space.spacetag_set.all()]
             }
             for review in reviews
         ]

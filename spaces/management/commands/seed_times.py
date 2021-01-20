@@ -9,10 +9,10 @@ from django.core.management.base    import BaseCommand
 from django.utils                   import timezone
 
 from users.models   import Host
-from spaces.models  import Space, DetailSpace, PackagePrice
+from spaces.models  import Space, DetailSpace, TimePrice
 
 class Command(BaseCommand):
-    help = "create packages"
+    help = "create time price"
 
     def add_arguments(self, parser):
         parser.add_argument("--number", type=int, default=1)
@@ -23,13 +23,10 @@ class Command(BaseCommand):
         detail_spaces       = DetailSpace.objects.all()
         fake                = Faker(["ko_KR"])
         seeder.add_entity(
-            PackagePrice,
+            TimePrice,
             number,
             {   
-                "name":                 "시간 패키지",
                 "detail_space":         lambda x : random.choice(detail_spaces),
-                "start_time":           lambda x : random.randint(0, 5),
-                "end_time":             lambda x : random.randint(6, 15),
                 "price":                lambda x : random.randint(1, 10) * 1000,
                 "people":               lambda x : random.randint(2, 5),
                 "excess_price":         lambda x : random.randint(1, 5) * 1000,
@@ -39,4 +36,4 @@ class Command(BaseCommand):
             }
         )
         seeder.execute()
-        self.stdout.write(self.style.SUCCESS(f'package created {number}'))
+        self.stdout.write(self.style.SUCCESS(f'time price created {number}'))

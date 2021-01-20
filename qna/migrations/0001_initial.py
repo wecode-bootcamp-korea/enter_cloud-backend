@@ -15,32 +15,31 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Review',
+            name='Question',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('content', models.CharField(max_length=300)),
-                ('rating', models.IntegerField()),
                 ('space', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='spaces.space')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='users.user')),
             ],
             options={
-                'db_table': 'reviews',
+                'db_table': 'questions',
             },
         ),
         migrations.CreateModel(
-            name='ReviewComment',
+            name='Answer',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('content', models.CharField(max_length=300)),
                 ('host', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='users.host')),
-                ('review', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='reviews.review')),
+                ('question', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='qna.question')),
             ],
             options={
-                'db_table': 'review_comments',
+                'db_table': 'answers',
             },
         ),
     ]

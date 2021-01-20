@@ -110,11 +110,11 @@ class DetailFacility(models.Model):
         db_table = "detail_facilities"
 
 class PackagePrice(TimeStampModel):
-    name = models.CharField(max_length = 18)
-    start_time = models.IntegerField()
-    end_time = models.IntegerField()
-    price = models.IntegerField()
-    people = models.IntegerField()
+    name         = models.CharField(max_length = 18)
+    start_time   = models.IntegerField()
+    end_time     = models.IntegerField()
+    price        = models.IntegerField()
+    people       = models.IntegerField()
     excess_price = models.IntegerField()
     detail_space = models.ForeignKey("spaces.DetailSpace", on_delete = models.CASCADE)
 
@@ -122,13 +122,14 @@ class PackagePrice(TimeStampModel):
         db_table = "package_prices"
     
 class TimePrice(TimeStampModel):
-    time_reservation_type = models.CharField(max_length = 20)
-    excess_price = models.IntegerField(null = True)
-    price = models.IntegerField()
-    detail_space = models.ForeignKey("DetailSpace", on_delete = models.CASCADE)
+    excess_price     = models.IntegerField(null = True)
+    people           = models.IntegerField()
+    price            = models.IntegerField()
+    detail_space     = models.ForeignKey("DetailSpace", on_delete = models.CASCADE)
 
     class Meta:
         db_table = "time_prices"
+
 class Like(models.Model):
     user     = models.ForeignKey("users.User", on_delete = models.CASCADE)
     space    = models.ForeignKey("spaces.Space", on_delete = models.CASCADE)
