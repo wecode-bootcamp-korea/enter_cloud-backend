@@ -16,8 +16,14 @@ MAX_PEOPLE = 10
 
 class SpaceCardView(View):
     def get(self, request):
-        spaces      = Space.objects.all().order_by("?").select_related("host").prefetch_related("review_set", "spacetag_set", "subimage_set", 
+        PAGE_SIZE  = 9
+        page       = request.GET.get("page", 1)
+        limit      = PAGE_SIZE * int(page)
+        offset     = limit - PAGE_SIZE 
+        spaces     = Space.objects.all().order_by("?").select_related("host").prefetch_related("review_set", "spacetag_set", "subimage_set", 
                                                                                             "detailspace_set", "host__user", "spacetag_set__tag")
+        spaces     = spaces[offset:limit]
+        
         space_card = [
             {
                 "id"            : space.id,
