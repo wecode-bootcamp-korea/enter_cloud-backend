@@ -42,7 +42,7 @@ class ReviewCardView(View):
         page        = request.GET.get("page", 1)
         limit       = PAGE_SIZE * int(page)
         offset      = limit - PAGE_SIZE 
-        reviews = Review.objects.all().order_by("-created_at").select_related("space").prefetch_related("space__detailspace_set")
+        reviews     = Review.objects.all().order_by("-created_at").select_related("space").prefetch_related("space__detailspace_set")
         reviews     = reviews[offset:limit]
         review_card = [
             {
@@ -52,7 +52,6 @@ class ReviewCardView(View):
                 "image_url" : review.space.main_image,
                 "price"     : review.space.detailspace_set.all().aggregate(Max("price")) if review.space.detailspace_set.exists() else PRICE,
                 "types"     : [types.name for types in review.space.types.all()]
-
             }
             for review in reviews
         ]
