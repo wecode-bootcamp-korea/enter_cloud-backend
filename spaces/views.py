@@ -54,6 +54,7 @@ class SpaceCardView(View):
             return JsonResponse({"space_card":space_card}, status = 200)
         except KeyError:
             return JsonResponse({"message":"KEY_ERROR"}, status = 400)
+ 
 
 class SpaceDetailView(View):
     def get(self, request, space_id):
