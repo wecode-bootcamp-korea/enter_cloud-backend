@@ -50,7 +50,7 @@ class ReviewCardView(View):
                 "content"   : review.content,
                 "rating"    : review.rating,
                 "image_url" : review.space.main_image,
-                "price"     : review.space.detailspace_set.all().aggregate(Max("price")) if review.space.detailspace_set.exists() else PRICE,
+                "price"     : review.space.detailspace_set.all().aggregate(Max("price"))["price__max"] if review.space.detailspace_set.exists() else PRICE,
                 "types"     : [types.name for types in review.space.types.all()]
             }
             for review in reviews
