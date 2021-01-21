@@ -85,10 +85,10 @@ class DetailSpace(models.Model):
     name                 = models.CharField(max_length = 18)
     information          = models.CharField(max_length = 500)
     image                = models.URLField(max_length = 2000)
-    min_reservation_time = models.IntegerField()
-    min_people           = models.IntegerField()
-    max_people           = models.IntegerField()
-    price                = models.IntegerField()
+    min_reservation_time = models.PositiveIntegerField()
+    min_people           = models.PositiveIntegerField()
+    max_people           = models.PositiveIntegerField()
+    price                = models.PositiveIntegerField()
     space                = models.ForeignKey("Space", on_delete = models.CASCADE)
 
     class Meta:
@@ -111,20 +111,20 @@ class DetailFacility(models.Model):
 
 class PackagePrice(TimeStampModel):
     name         = models.CharField(max_length = 18)
-    start_time   = models.IntegerField()
-    end_time     = models.IntegerField()
-    price        = models.IntegerField()
-    people       = models.IntegerField()
-    excess_price = models.IntegerField()
+    start_time   = models.PositiveIntegerField()
+    end_time     = models.PositiveIntegerField()
+    price        = models.PositiveIntegerField()
+    people       = models.PositiveIntegerField()
+    excess_price = models.PositiveIntegerField()
     detail_space = models.ForeignKey("spaces.DetailSpace", on_delete = models.CASCADE)
 
     class Meta:
         db_table = "package_prices"
     
 class TimePrice(TimeStampModel):
-    excess_price     = models.IntegerField(null = True)
-    people           = models.IntegerField()
-    price            = models.IntegerField()
+    excess_price     = models.PositiveIntegerField(null = True)
+    people           = models.PositiveIntegerField()
+    price            = models.PositiveIntegerField()
     detail_space     = models.ForeignKey("DetailSpace", on_delete = models.CASCADE)
 
     class Meta:

@@ -4,8 +4,7 @@ from django.utils import timezone
 from utils import TimeStampModel
 
 class Reservation(models.Model):
-    reservation_type = models.CharField(max_length = 20)
-    people           = models.IntegerField()
+    people           = models.PositiveIntegerField()
     day              = models.DateField()
     start_time       = models.DateTimeField()
     end_time         = models.DateTimeField()
