@@ -143,7 +143,7 @@ class UserProfileView(View):
             if new_phone_number:
                 if not validate_phone_number.match(new_phone_number):
                     return JsonResponse({"message" : "INVALID_PHONE_NUMBER"})
-                update_data              = User.objects.get(id = user.id)
+                update_data              = user
                 update_data.phone_number = new_phone_number
                 update_data.save()
                 return JsonResponse({"message" : "PHONE_NUMBER_CHANGE_COMPLETE"}, status = 201)
