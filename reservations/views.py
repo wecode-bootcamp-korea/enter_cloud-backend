@@ -15,8 +15,7 @@ class ReservationView(View):
     def post(self, request, detail_space_id):
         try:
             data                = json.loads(request.body)
-            start_day           = data["start_day"]
-            end_day             = data["end_day"]
+            reservation_day     = data["reservation_day"]
             reservation_people  = int(data["people"])
             name                = data["name"]
             phone_number        = data["phone_number"]
@@ -50,25 +49,22 @@ class ReservationView(View):
                 if not time_price in detail_space.timeprice_set.all():
                     return JsonResponse({"message":"TIME_PRICE_NOT_IN_DETAIL_SPACE"}, status = 400)
             
-            start               = datetime.strptime(start_day + " " + start_time, "%Y-%m-%d %H")
-            end                 = datetime.strptime(end_day + " " + end_time, "%Y-%m-%d %H")
-
+            start               = datetime.strptime(reservation_day + " " + start_time, "%Y-%m-%d %H")
+            end                 = datetime.strptime(reservation_day + " " + end_time, "%Y-%m-%d %H")
             hours               = list(range(0, 24))
-            
+
+            if start_time > end_time : 
+                end = end + timedelta(days = 1)
+                
             if start < datetime.now():
                 return JsonResponse({"message":"CAN_NOT_RESERVATION_BEFORE_TODAY"}, status = 400)
+
+            if Reservation.objects.filter(start_time__gte = start, end_time__lte = end).exists():
+                return JsonResponse({"message":"RESERVATION_ALREADY_EXIST"})
 
             if reservation_people > allowed_people:
                 gap         = reservation_people - allowed_people
                 add_price   = excess_price * gap
-
-            for check in day_check:
-                for hour in range(check.start_time.hour, check.end_time.hour):
-                    hours.remove(hour)
-
-            for reservation_time in range(int(start_time), int(end_time)):
-                if not reservation_time in hours:
-                    return JsonResponse({"message":"CAN_NOT_RESERVATION"}, status = 400)
 
             reservation = Reservation.objects.create(
                 user                 = user, 
