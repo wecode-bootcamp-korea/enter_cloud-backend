@@ -64,11 +64,11 @@ class Command(BaseCommand):
         for detail_space_id in detail_space_id_list:
             detail_space        = DetailSpace.objects.get(id = detail_space_id)
         
-            random_number       = random.randint(1, len(detail_types))
+            random_number       = random.randint(0, len(detail_types))
             detail_type_list    = detail_types[random_number:random_number + 2]
             detail_space.detailtype_set.set(detail_type_list)
 
-            random_number           = random.randint(1, len(detail_facilities))
+            random_number           = random.randint(0, len(detail_facilities))
             detail_facility_list    = detail_facilities[random_number:random_number + 6]
             detail_space.detailfacility_set.set(detail_facility_list)
         

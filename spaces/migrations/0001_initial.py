@@ -95,6 +95,21 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
+            name='TimePrice',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('time_reservation_type', models.CharField(max_length=20)),
+                ('excess_price', models.IntegerField(null=True)),
+                ('price', models.IntegerField()),
+                ('detail_space', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='spaces.detailspace')),
+            ],
+            options={
+                'db_table': 'time_prices',
+            },
+        ),
+        migrations.CreateModel(
             name='SubImage',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
@@ -152,6 +167,24 @@ class Migration(migrations.Migration):
             ],
             options={
                 'db_table': 'reservation_notes',
+            },
+        ),
+        migrations.CreateModel(
+            name='PackagePrice',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('name', models.CharField(max_length=18)),
+                ('start_time', models.IntegerField()),
+                ('end_time', models.IntegerField()),
+                ('price', models.IntegerField()),
+                ('people', models.IntegerField()),
+                ('excess_price', models.IntegerField()),
+                ('detail_space', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='spaces.detailspace')),
+            ],
+            options={
+                'db_table': 'package_prices',
             },
         ),
         migrations.CreateModel(

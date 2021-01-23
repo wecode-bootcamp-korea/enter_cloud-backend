@@ -62,8 +62,8 @@ class Command(BaseCommand):
                 "open_time":            lambda x : random.randint(0, 8),
                 "close_time":           lambda x : random.randint(20, 24),
                 "location":             lambda x : fake.borough(),
-                "created_at":           lambda x : timezone.localtime(),
-                "updated_at":           lambda x : timezone.localtime(),
+                "created_at":           lambda x : timezone.now(),
+                "updated_at":           lambda x : timezone.now(),
             }
         )
         seed_space      = seeder.execute()

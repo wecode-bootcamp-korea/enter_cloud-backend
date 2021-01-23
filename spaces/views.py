@@ -1,10 +1,10 @@
 import json
+import random
 import math
 
 from django.views       import View
-from django.http        import JsonResponse
+from django.http        import JsonResponse, HttpResponse
 from django.db.models   import Max
-from django.db import connection
 
 from spaces.models      import Space, Like, Type
 from users.models       import Host  
