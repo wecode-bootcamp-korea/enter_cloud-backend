@@ -111,8 +111,8 @@ class DetailFacility(models.Model):
 
 class PackagePrice(TimeStampModel):
     name         = models.CharField(max_length = 18)
-    start_time   = models.PositiveIntegerField()
-    end_time     = models.PositiveIntegerField()
+    start_time   = models.CharField(max_length = 20)
+    end_time     = models.CharField(max_length = 20)
     price        = models.PositiveIntegerField()
     people       = models.PositiveIntegerField()
     excess_price = models.PositiveIntegerField()

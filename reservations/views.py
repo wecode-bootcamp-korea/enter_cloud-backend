@@ -1,6 +1,6 @@
 import json
 
-from datetime           import datetime
+from datetime           import datetime, timedelta
 from django.views       import View
 from django.http        import JsonResponse
 from django.db.models   import Q
@@ -15,7 +15,8 @@ class ReservationView(View):
     def post(self, request, detail_space_id):
         try:
             data                = json.loads(request.body)
-            reservation_day     = data["day"]
+            start_day           = data["start_day"]
+            end_day             = data["end_day"]
             reservation_people  = int(data["people"])
             name                = data["name"]
             phone_number        = data["phone_number"]
@@ -40,8 +41,8 @@ class ReservationView(View):
             
             if time_price_id is not None:
                 time_price          = TimePrice.objects.get(id = time_price_id)
-                start_time          = int(data.get("start_time"))
-                end_time            = int(data.get("end_time"))
+                start_time          = data.get("start_time")
+                end_time            = data.get("end_time")
                 allowed_people      = time_price.people
                 excess_price        = time_price.excess_price
                 except_excess_price = time_price.price
@@ -49,27 +50,23 @@ class ReservationView(View):
                 if not time_price in detail_space.timeprice_set.all():
                     return JsonResponse({"message":"TIME_PRICE_NOT_IN_DETAIL_SPACE"}, status = 400)
             
-            year, month, day    = reservation_day.split("-")
-            start               = datetime(int(year), int(month), int(day), start_time)
-            end                 = datetime(int(year), int(month), int(day), end_time)
-            day_check           = Reservation.objects.filter(day = reservation_day)
-            hours               = list(range(0, 24))
+            start               = datetime.strptime(start_day + " " + start_time, "%Y-%m-%d %H")
+            end                 = datetime.strptime(end_day + " " + end_time, "%Y-%m-%d %H")
 
+            hours               = list(range(0, 24))
+            
             if start < datetime.now():
                 return JsonResponse({"message":"CAN_NOT_RESERVATION_BEFORE_TODAY"}, status = 400)
 
             if reservation_people > allowed_people:
                 gap         = reservation_people - allowed_people
                 add_price   = excess_price * gap
-                
-            if start > end:
-                return JsonResponse({"message":"WRONG_TIME"}, status = 400) 
 
             for check in day_check:
                 for hour in range(check.start_time.hour, check.end_time.hour):
                     hours.remove(hour)
 
-            for reservation_time in range(start_time, end_time+1):
+            for reservation_time in range(int(start_time), int(end_time)):
                 if not reservation_time in hours:
                     return JsonResponse({"message":"CAN_NOT_RESERVATION"}, status = 400)
 
@@ -99,7 +96,8 @@ class ReservationView(View):
                 )
             return JsonResponse({"message":"SUCCESS"}, status = 201)
         except ValueError:
-            return JsonResponse({"message":"WRONG_DATE"}, status = 400)
+            return JsonResponse({"meassage":"OUT_OF_RANGE_DAY"}, status = 400)
+    
 
     def get(self, request, detail_space_id):
         data             = json.loads(request.body)

@@ -5,7 +5,8 @@ from utils import TimeStampModel
 
 class Reservation(models.Model):
     people           = models.PositiveIntegerField()
-    day              = models.DateField()
+    start_day        = models.DateField()
+    end_day          = models.DateField()
     start_time       = models.DateTimeField()
     end_time         = models.DateTimeField()
     status           = models.CharField(max_length = 20, default = "pending")
