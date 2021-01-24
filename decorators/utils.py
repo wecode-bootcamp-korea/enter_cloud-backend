@@ -22,3 +22,13 @@ def login_required(func):
             return JsonResponse({"message":"DECODE_ERROR"}, status = 400)
         return func(self, request, *args, **kwargs)
     return wrapper
+
+def check_blank(func):
+    def wrapper(self, request, *args, **kwargs):
+        data        = json.loads(request.body)
+        value_list  = data.values()
+        
+        if "" in value_list:
+            return JsonResponse({"message":"BLANK"}, status = 400)
+        return func(self, request, *args, **kwargs)
+    return wrapper

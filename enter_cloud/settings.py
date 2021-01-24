@@ -149,3 +149,35 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken',
     'x-requested-with',
 )
+"""
+LOGGING = { 
+    'version': 1,
+    'disable_existing_loggers': False, 
+    "formatters":{
+        "verbose":{
+            "format": "{asctime} {levelname} {module} {message}",
+            "datefmt":"%Y-%m-%d %H:%M",
+            "style":"{",
+        },
+    },
+    'handlers': { 
+        'console':{
+            'level':'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter':'verbose',
+        },
+        'file': { 
+            'level': 'DEBUG', 
+            'class': 'logging.FileHandler', 
+            'filename': 'debug.log', 
+            }, 
+        }, 
+        'loggers': { 
+            'django': { 
+                'handlers': ['file'], 
+                'level': 'DEBUG', 
+                'propagate': True, 
+                }, 
+            }, 
+        }
+"""
